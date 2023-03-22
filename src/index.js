@@ -33,7 +33,7 @@ import { FormContext } from "./contexts/FormContext";
  * a fully functional form.
  * @param {mixed} data Form dataset from graphQL
  */
-const GravityFormForm = ({
+const GravityFormFormForm = ({
   data,
   presetValues,
   successCallback,
@@ -241,7 +241,7 @@ const GravityFormForm = ({
   );
 };
 
-const GravityFormProvider = ({
+const GravityFormForm = ({
   url,
   data,
   presetValues,
@@ -260,7 +260,7 @@ const GravityFormProvider = ({
 
   return (
     <ApolloProvider client={client}>
-      <GravityFormForm
+      <GravityFormFormForm
         data={data}
         presetValues={presetValues}
         successCallback={successCallback}
@@ -270,20 +270,20 @@ const GravityFormProvider = ({
   );
 };
 
-GravityFormProvider.propTypes = {
+GravityFormForm.propTypes = {
   errorCallback: PropTypes.func,
   data: PropTypes.object.isRequired,
   successCallback: PropTypes.func,
   presetValues: PropTypes.shape({}),
 };
 
-GravityFormProvider.defaultProps = {
+GravityFormForm.defaultProps = {
   errorCallback: () => {},
   successCallback: () => {},
   presetValues: {},
 };
 
-export default GravityFormProvider;
+export default GravityFormForm;
 
 export const GravityFormFields = graphql`
   fragment GravityFormFields on WpGfForm {
