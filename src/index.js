@@ -1,6 +1,6 @@
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { graphql, navigate } from "gatsby";
 import { useMutation } from "@apollo/client";
 import { useForm, FormProvider } from "react-hook-form";
@@ -17,6 +17,16 @@ import {
 import submitMutation from "./submitMutation";
 import formatPayload from "./utils/formatPayload";
 import { valueToLowerCase } from "./utils/helpers";
+
+import fetch from "cross-fetch";
+
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  HttpLink,
+} from "@apollo/client";
+import { FormContext } from "./contexts/FormContext";
 
 /**
  * Component to take Gravity Form graphQL data and turn into
@@ -231,20 +241,49 @@ const GravityFormForm = ({
   );
 };
 
-GravityFormForm.propTypes = {
+const GravityFormProvider = ({
+  url,
+  data,
+  presetValues,
+  successCallback,
+  errorCallback,
+}) => {
+  const { url } = useContext(FormContext);
+
+  const client = new ApolloClient({
+    link: new HttpLink({
+      uri: url,
+      fetch,
+    }),
+    cache: new InMemoryCache(),
+  });
+
+  return (
+    <ApolloProvider client={client}>
+      <GravityFormForm
+        data={data}
+        presetValues={presetValues}
+        successCallback={successCallback}
+        errorCallback={errorCallback}
+      />
+    </ApolloProvider>
+  );
+};
+
+GravityFormProvider.propTypes = {
   errorCallback: PropTypes.func,
   data: PropTypes.object.isRequired,
   successCallback: PropTypes.func,
   presetValues: PropTypes.shape({}),
 };
 
-GravityFormForm.defaultProps = {
+GravityFormProvider.defaultProps = {
   errorCallback: () => {},
   successCallback: () => {},
   presetValues: {},
 };
 
-export default GravityFormForm;
+export default GravityFormProvider;
 
 export const GravityFormFields = graphql`
   fragment GravityFormFields on WpGfForm {
