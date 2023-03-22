@@ -8,8 +8,10 @@ import {
 } from "@apollo/client";
 
 export const wrapRootElement = ({ element }, { url }) => {
+  const isSSR = typeof window === "undefined";
+
   // Add error handling if no URL passed.
-  if (!url) {
+  if (!url || isSSR) {
     return null;
   }
 
